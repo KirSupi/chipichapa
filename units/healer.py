@@ -4,15 +4,13 @@ from units.types import Team, SPECIALIZATION_HEALER
 
 
 class Healer(Base):
-    MAX_HP = 50
-    MAX_POWER = 0
     SPECIALIZATION = SPECIALIZATION_HEALER
 
-    def __init__(self, team: Team):
-        Base.__init__(self, team, self.SPECIALIZATION, self.MAX_HP)
+    def __init__(self, team: Team, hp: int, attack: int, defense: int, dodge: int) -> None:
+        Base.__init__(self, team, self.SPECIALIZATION, hp, attack, defense, dodge)
 
     def attack(self) -> int:
-        return random.randint(0, self.MAX_POWER)
+        return random.randint(0, self._attack)
 
     def defense(self, hit_points: int):
         self._hp -= hit_points

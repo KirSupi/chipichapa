@@ -15,7 +15,7 @@ class Field(object):
 
     def add_unit(self, unit: units.Base):
         if unit.team == units.TEAM_LEFT:
-            self._left_team.insert(0, unit)
+            self._left_team.append(unit)
         else:
             self._right_team.append(unit)
 
@@ -31,17 +31,23 @@ class Field(object):
                     self._right_team.pop(i)
                     break
 
-    def render(self) -> None:
+    def render(self) -> bool:
         rect = self._surface.get_rect()
         pygame.draw.line(self._surface, (255, 0, 255), rect.midtop, rect.midbottom)
 
+        animated = False
+
         for i, unit in enumerate(self._left_team):
+            animated = animated or unit.animated
             self._surface.blit(self._get_unit_sprite(unit),
                                (rect.centerx - config.sprites_size * (i + 1), rect.centery))
 
         for i, unit in enumerate(self._right_team):
+            animated = animated or unit.animated
             self._surface.blit(self._get_unit_sprite(unit),
                                (rect.centerx + config.sprites_size * i, rect.centery))
+
+        return animated
 
     @staticmethod
     def _get_unit_sprite(unit: units.Base) -> pygame.Surface:

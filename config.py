@@ -31,6 +31,10 @@ class Config(object):
     def background_sprite(self) -> str:
         return self._config['background_sprite']
 
+    @property
+    def difficulty(self) -> str|None:
+        return self._config['difficulty'] if 'difficulty' in self._config else None
+
 
 # Загрузка конфигурации
 config = Config()

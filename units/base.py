@@ -8,8 +8,8 @@ from config import config
 from .types import Team, Specialization
 
 class IBase(ABC):
-    @abstractmethod
     @property
+    @abstractmethod
     def team(self) -> Team:
         raise NotImplementedError
 
@@ -27,10 +27,20 @@ class Base(object):
     _animation_frame: int | None = None
     _sprite: pygame.Surface = None
 
-    def __init__(self, team: Team, spec: Specialization, hp: int):
+    def __init__(self,
+                 team: Team,
+                 spec: Specialization,
+                 hp: int,
+                 attack: int,
+                 defense: int,
+                 dodge: int,
+                 ):
         self._team = team
         self._max_hp = hp
         self._hp = hp
+        self._attack = attack
+        self._defense = defense
+        self._dodge = dodge
         self._spec = spec
 
     @property
@@ -49,6 +59,10 @@ class Base(object):
     def max_hp(self) -> int:
         return self._max_hp
 
+    @property
+    def animated(self) -> bool:
+        return self._animation_frame is not None
+
     # PATTERN Lasy Initialization
     @property
     def sprite(self) -> pygame.Surface:
@@ -60,8 +74,8 @@ class Base(object):
 
         # Animation
 
-        # if self._animation_frame is not None and self._animation_frame >= self._MAX_ANIMATION_FRAMES:
-        #     self._animation_frame = None
+        if self._animation_frame is not None and self._animation_frame >= self._MAX_ANIMATION_FRAMES:
+            self._animation_frame = None
 
         sprite = self._sprite.copy()
         if self._animation_frame is not None:
