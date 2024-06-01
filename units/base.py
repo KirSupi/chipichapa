@@ -1,3 +1,4 @@
+import copy
 import pathlib
 import uuid
 from abc import ABC, abstractmethod
@@ -7,10 +8,56 @@ import pygame
 from config import config
 from .types import Team, Specialization
 
+
 class IBase(ABC):
     @property
     @abstractmethod
     def team(self) -> Team:
+        raise NotImplementedError
+
+    @abstractmethod
+    def attack(self) -> int:
+        raise NotImplementedError
+
+    @abstractmethod
+    def defense(self, hit_points: int):
+        raise NotImplementedError
+
+    @property
+    @abstractmethod
+    def id(self) -> uuid.UUID:
+        raise NotImplementedError
+
+    @property
+    @abstractmethod
+    def hp(self) -> int:
+        raise NotImplementedError
+
+    @property
+    @abstractmethod
+    def max_hp(self) -> int:
+        raise NotImplementedError
+
+    @property
+    @abstractmethod
+    def animated(self) -> bool:
+        raise NotImplementedError
+
+    @property
+    @abstractmethod
+    def sprite(self) -> pygame.Surface:
+        raise NotImplementedError
+
+    @abstractmethod
+    def is_alive(self) -> bool:
+        raise NotImplementedError
+
+    @abstractmethod
+    def start_animation(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def clone(self):
         raise NotImplementedError
 
 
@@ -63,7 +110,7 @@ class Base(object):
     def animated(self) -> bool:
         return self._animation_frame is not None
 
-    # PATTERN Lasy Initialization
+    # PATTERN Lazy Initialization – спрайт загружается один раз и только когда понадобится
     @property
     def sprite(self) -> pygame.Surface:
         if self._sprite is None:
@@ -100,3 +147,8 @@ class Base(object):
 
     def start_animation(self):
         self._animation_frame = 0
+
+    def clone(self):
+        c = copy.deepcopy(self)
+        c._id = uuid.uuid4()
+        return c

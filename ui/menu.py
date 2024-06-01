@@ -58,7 +58,8 @@ class Menu(object):
 
         for button in self._buttons:
             if button.click(event):
-                button.callback()
+                if button.callback is not None:
+                    button.callback()
 
     def lock(self):
         self._locked = True

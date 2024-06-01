@@ -6,20 +6,20 @@ from . import colors
 
 
 class Field(object):
-    _left_team: list[units.Base] = []
-    _right_team: list[units.Base] = []
+    _left_team: list[units.IBase] = []
+    _right_team: list[units.IBase] = []
     _surface: pygame.Surface = None
 
     def __init__(self, surface: pygame.Surface):
         self._surface = surface
 
-    def add_unit(self, unit: units.Base):
+    def add_unit(self, unit: units.IBase):
         if unit.team == units.TEAM_LEFT:
             self._left_team.append(unit)
         else:
             self._right_team.append(unit)
 
-    def remove_unit(self, unit: units.Base):
+    def remove_unit(self, unit: units.IBase):
         if unit.team == units.TEAM_LEFT:
             for i in range(len(self._left_team)):
                 if self._left_team[i].id == unit.id:
@@ -50,7 +50,7 @@ class Field(object):
         return animated
 
     @staticmethod
-    def _get_unit_sprite(unit: units.Base) -> pygame.Surface:
+    def _get_unit_sprite(unit: units.IBase) -> pygame.Surface:
         unit_sprite = unit.sprite
         sprite = pygame.Surface(unit_sprite.get_size(), pygame.SRCALPHA, 32)
         sprite.blit(unit_sprite, (0, 0))

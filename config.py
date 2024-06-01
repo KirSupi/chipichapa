@@ -1,7 +1,7 @@
 import json
 
 
-# PATTERN Singleton
+# PATTERN Singleton может быть только один конфиг
 class Config(object):
     _instance = None
 

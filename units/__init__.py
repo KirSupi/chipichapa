@@ -1,4 +1,4 @@
-from .base import Base
+from .base import Base, IBase
 from .types import *
 from .warrior import Warrior
 from .knight import Knight

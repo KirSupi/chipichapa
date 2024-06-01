@@ -1,16 +1,17 @@
 import pathlib
+import time
 import uuid
 
 import pygame
 from config import config
-from units import Base
+from units import IBase
 from .difficulty import DifficultyMenu
 from .menu import Menu
 from .field import Field
-from . import colors
+from . import colors, fonts
 
 
-# PATTERN Facade
+# PATTERN Facade – метод render прячет логику с отрисовкой
 class UI(object):
     _screen: pygame.Surface = None
     _difficulty: DifficultyMenu = None
@@ -20,6 +21,7 @@ class UI(object):
     _bg_height: int = 0
     _screen_rect: pygame.Rect = None
     _background_image: pygame.Surface = None
+    _game_over_title: pygame.Surface = None
 
     def __init__(self,
                  make_step_callback: callable = None,
@@ -45,6 +47,8 @@ class UI(object):
         # Получение размеров изображения и экрана
         self._bg_width, self._bg_height = self._background_image.get_size()
         self._screen_rect = self._screen.get_rect()
+
+        self._game_over_title = fonts.default.render('GAME OVER', True, colors.BLACK)
 
     def run_difficulty_menu(self, set_difficulty_callback: callable = None):
         self._screen.fill(colors.WHITE)
@@ -75,10 +79,23 @@ class UI(object):
             animated = self._field.render()
             pygame.display.flip()
 
-    def add_unit(self, unit: Base) -> None:
+    def game_over(self) -> None:
+        self._screen.fill(colors.WHITE)
+        rect = self._game_over_title.get_rect()
+        self._screen.blit(self._game_over_title, (self._screen_rect.centerx-rect.x/2, self._screen_rect.centery))
+        pygame.display.flip()
+        time.sleep(3)
+
+        # Пресс эни кей
+        while True:
+            for _ in pygame.event.get():
+                return
+
+
+    def add_unit(self, unit: IBase) -> None:
         self._field.add_unit(unit)
 
-    def remove_unit(self, unit: Base) -> None:
+    def remove_unit(self, unit: IBase) -> None:
         self._field.remove_unit(unit)
 
     def handle_click(self, event: pygame.event.Event) -> None:

@@ -2,5 +2,5 @@
     "sprites_directory": "./sprites/kittens",
     "sprites_format": "png",
     "sprites_size": 96,
-    "background_sprite": "background.jpeg"
+    "background_sprite": "bg3.jpeg"
 }

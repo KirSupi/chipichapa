@@ -2,18 +2,20 @@ import time
 import pygame
 
 import unit_factories
+from command import Command
 from config import config
 import units
 from ui import UI
 from unit_factories.factory import Difficulty
-from units import Base
+from units import Base, IBase
+from units.logger import Logger
 
 
 class Game(object):
     FPS = 30
     _ui: UI = None
-    _left_team: list[units.Base] = []
-    _right_team: list[units.Base] = []
+    _left_team: list[units.IBase] = []
+    _right_team: list[units.IBase] = []
     _starting_team: units.Team = units.TEAM_LEFT
     _step_number: int = 0
     _factory: unit_factories.UnitFactory
@@ -27,7 +29,7 @@ class Game(object):
 
         self._factory = unit_factories.LiteUnitFactory()
 
-        self._add_unit(self._factory.create_shield(units.TEAM_LEFT))
+        self._add_unit(Logger(self._factory.create_shield(units.TEAM_LEFT)))
         self._add_unit(self._factory.create_knight(units.TEAM_LEFT))
         self._add_unit(self._factory.create_warrior(units.TEAM_LEFT))
         self._add_unit(self._factory.create_archer(units.TEAM_LEFT))
@@ -40,10 +42,13 @@ class Game(object):
         # self._left_team[0].start_animation()
 
         while True:
-            if len(self._left_team) == 0:
-                return  # todo game over title
-            if len(self._right_team) == 0:
-                return  # todo game over title
+            if not self._left_team or not self._right_team:
+                self._ui.game_over()
+                break
+            # if len(self._left_team) == 0:
+            #     return  # todo game over title
+            # if len(self._right_team) == 0:
+            #     return  # todo game over title
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -74,7 +79,14 @@ class Game(object):
 
         # Ходит первый юнит второй команды умер, то заменяем его
         if not first_defense.is_alive():
-            defense_team.pop(0)
+            if first_defense.team == units.TEAM_LEFT:
+                self._left_team.pop(0)
+                defense_team = self._left_team
+                self._ui.remove_unit(first_defense)
+            else:
+                self._right_team.pop(0)
+                defense_team = self._right_team
+                self._ui.remove_unit(first_defense)
             if not len(defense_team):
                 return
             first_defense = defense_team[0]
@@ -108,7 +120,7 @@ class Game(object):
 
         self._ui.unlock_menu()
 
-    def _add_unit(self, unit: Base):
+    def _add_unit(self, unit: IBase):
         if unit.team == units.TEAM_LEFT:
             self._left_team.append(unit)
         else:
@@ -120,4 +132,5 @@ class Game(object):
         self._difficulty = difficulty
 
 
+# PATTERN Singleton по-pythonовски
 game = Game()

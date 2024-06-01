@@ -11,7 +11,7 @@ DIFFICULTY_LITE = Difficulty('lite')
 DIFFICULTY_HEAVY = Difficulty('heavy')
 
 
-# PATTERN Abstract Factory
+# PATTERN Abstract Factory два режима "силы" юнитов - Lite и Heavy
 class UnitFactory(ABC):
     @abstractmethod
     def create_warrior(self, team: units.Team) -> units.Warrior:
